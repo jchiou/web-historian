@@ -17,16 +17,16 @@ var sendResult = function (path, res, req, statusCode) {
   req.on('end', function (chunk) {
     res.writeHead(statusCode, headers.headers);
     //redirect here?
-  });
     ///////////HOW TO REDIRECT??!!////////
     //res.redirect('https:' + /* *the filepath*/);
     //////////////////////////////////////
+  });
   
   fs.readFile(path, function (err, data) {
     if (err) { 
       throw err; 
     }
-    return res.end(data);
+    return res.end('' + data);
   });
   ////where best to place res.end?
 };
@@ -39,13 +39,17 @@ exports.handleRequest = function (req, res) {
       sendResult(pathOptions[req.url], res, req, statusCode);
       //paths for webURLsrn bool;})) { 
     } else if (archive.isUrlArchived(req.url, function (bool) { return bool; })) {
-      sendResult(archive.paths.archivedSites + req.url, res, req, statusCode);
+      sendResult(archive.paths.archivedSites + '/' + req.url, res, req, statusCode);
     } else {
       statusCode = 404; //REAL STATUS CODE?
       res.writeHead(statusCode, headers.headers);
-      res.end({});
       //add the url to the list
+      archive.addUrlToList(req.url);
       //redirect the usR to the 'waiting' html
+      //res.redirect()
+      res.end('');
     }
+  } else if (req.method === 'POST') {
+
   }
 };
