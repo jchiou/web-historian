@@ -37,14 +37,15 @@ exports.handleRequest = function (req, res) {
        //paths for special cases:
     if (req.url in pathOptions) {
       sendResult(pathOptions[req.url], res, req, statusCode);
-      //paths for webURLsrn bool;})) { 
-        //SO THIS PARRT IS NOT WORKING
+      //paths for new URLs
     } else {
+      // if it's alreadyy archived
       archive.isUrlArchived(req.url, function (bool) { 
         if (bool === true) {
           statusCode = 200;
           console.log('its archived', req.url);
           sendResult(archive.paths.archivedSites + '/' + req.url, res, req, statusCode);
+          //if we aint got it archived
         } else {
           var statusCode = 404; //REAL STATUS CODE?
           console.log('404url', req.url);
@@ -54,7 +55,7 @@ exports.handleRequest = function (req, res) {
           //redirect the usR to the 'waiting' html
           //res.redirect()
           res.end('');
-
+          ///YO, we maybe should POST at this pt
         }
       });
       
@@ -62,10 +63,15 @@ exports.handleRequest = function (req, res) {
 
 
   } else if (req.method === 'POST') {
-    var statusCode = 201;
-    archive.addUrlToList(req.url,function(x) {return x} /*,WHAT CB THO?*/);
-    res.writeHead(statusCode, headers.headers);
-    res.end('');
+    var statusCode = 302;
+    req.on('data', function(chunk) {
+      ////REMEMBER THAT THIS IS A NAIVE SOLUTION ('url=' + google.com)
+      var chunker = chunk.toString().slice(4);
+      archive.addUrlToList(chunker, function() {
+        res.writeHead(statusCode, headers.headers);
+        res.end('');
+      });
+    });
   }
 };
 
