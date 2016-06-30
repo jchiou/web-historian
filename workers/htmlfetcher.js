@@ -29,12 +29,14 @@ exports.filterUrlFiles = function (urlList) {
 
 
 
-
+//oh~~! prbz this file should be pure except
+//cronTron
 
 ///////////////////////////
 /////////CRON STUFF
 
-//maybe this is the cron stuff?? ?
-
+//maybe this is 4 the cron stuff?? ?
 //every so often call downloadUrls
-//save that info somewhere
+
+                //this should give us a filtered list
+archive.downloadUrls(archive.readListOfUrls(exports.filterUrlFiles));

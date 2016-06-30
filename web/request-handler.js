@@ -38,18 +38,22 @@ exports.handleRequest = function (req, res) {
     if (req.url in pathOptions) {
       sendResult(pathOptions[req.url], res, req, statusCode);
       //paths for webURLsrn bool;})) { 
+        //SO THIS PARRT IS NOT WORKING
     } else if (archive.isUrlArchived(req.url, function (bool) { return bool; })) {
       sendResult(archive.paths.archivedSites + '/' + req.url, res, req, statusCode);
     } else {
       statusCode = 404; //REAL STATUS CODE?
       res.writeHead(statusCode, headers.headers);
       //add the url to the list
-      archive.addUrlToList(req.url);
+      archive.addUrlToList(req.url /*,WHAT CB THO?*/);
       //redirect the usR to the 'waiting' html
       //res.redirect()
       res.end('');
     }
   } else if (req.method === 'POST') {
-
+    var statusCode = 201;
+    archive.addUrlToList(req.url /*,WHAT CB THO?*/);
+    res.writeHead(statusCode, headers.headers);
+    res.end('');
   }
 };
