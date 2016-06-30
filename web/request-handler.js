@@ -2,47 +2,45 @@ var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var initialize = require('./initialize.js');
 var fs = require('fs');
+var headers = require('./http-helpers');
 
 // require more modules/folders here!
-
-exports.handleRequest = function (req, res) {
-  //
-
-  fs.stat(archive.paths.archivedSites + '/' + req.url, function(err) {
-    if (err) {
-      throw err;
-    }
-    fs.readFile(archive.paths.archivedSites + '/' + req.url, function(err, data) {
-      if (err) { console.log( err) };
-      console.log("data is", data.toString());
-    });
-  } );
-
-  if (req.method === 'GET') {
-    req.on('end', function() {
-      //what are we doing with this?!
-      //add urlToList
-      //go into the path, check if its there, 
-      //if it is, return the whole content of that fils
-
-      // if (fs.stat(archive.paths.archivedSites + '/' + req.url, function () {//
-   
-      // })) {
-      //   //go to the path
-      //   console.log('heyyy grrl heyy')
-      //   //get the text content of the specified and Stringify it.
-      //   // var result = fs.readfile(file, optionalThing);
-      //   // JSON.stringify(result);
-      //   // //append file to data
-      //   // fs.appendfile(fileToAppendTo, req.url);
-      // }
-      res.writeHead('');
-
-    });
-  }
- //archive.paths.list
-  res.end();
+var pathOptions = {
+  '/': 'web/public/index.html',
+  '/index.html': 'web/public/index.html',
+  '/loading.html': 'web/public/loading.html',
+  'styles.css': 'web/public/style.css'
 };
 
-// console.log(__dirname);
+//modulizing reading file and sending html contents to client
+var sendResult = function (path, res) {
+  var result = '';
+  fs.readFile(path, function (err, data) {
+    if (err) { 
+      throw err; 
+    }
+    result += data;
+    res.end(result);
+  });
+};
+
+
+exports.handleRequest = function (req, res) {
+  if (req.method === 'GET') {
+    if (req.url in pathOptions) {
+      sendResult(pathOptions[req.url], res);
+
+    } else {
+        //ARCHIVES
+    }
+    req.on('end', function () {
+      res.writeHead(200, headers.headers);
+      console.log('onEnd', result.toString());    
+    });
+    // console.log(result);
+        //test if NOT FOUND... 404
+  }
+};
+
+
 
