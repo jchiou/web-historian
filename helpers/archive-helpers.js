@@ -31,7 +31,8 @@ exports.initialize = function(pathsObj) {
 exports.readListOfUrls = function(cb) {
 
   fs.readFile(exports.paths.list, function (err, data) {
-    if (err) { throw err;
+    if (err) { 
+      throw err;
     } else {
       //split stuff
       var urlArray = data.toString();
@@ -55,7 +56,7 @@ exports.addUrlToList = function(url, cb) {
   //check if isUrlInLis
   return exports.isUrlInList(url, function (boolean) {
     if (!boolean) {
-      fs.appendFile(exports.paths.list, url, function(err) {
+      return fs.appendFile(exports.paths.list, url, function(err) {
         return err ? err : cb(url);
       });
     }
@@ -63,9 +64,10 @@ exports.addUrlToList = function(url, cb) {
 };
 
 exports.isUrlArchived = function(url, cb) {
-  //so is this a string or an array 
-  // console.log( exports.paths.list );
-  return fs.stat(exports.paths.archivedSites + '/' + url, function(err, stat) {
+
+  // maybe we want a more flexible path than archivedSites
+  return fs.stat(path.normalize(exports.paths.archivedSites + '/' + url), function(err, stat) {
+    // console.log("is URL archived", path.normalize(exports.paths.archivedSites + '/' + url))
     return err ? cb(false) : cb(true);
   });
 };
@@ -74,7 +76,7 @@ exports.downloadUrls = function(filteredUrlList) {
   //do the downloading
   filteredUrlList.forEach( function(url) { 
     //
-    request('http://' +url).pipe(fs.createWriteStream(exports.paths.archivedSites + '/' + url));
+    request('http://' + url).pipe(fs.createWriteStream(exports.paths.archivedSites + '/' + url));
       //fs.write(body) or appendFile
   });
 };

@@ -38,5 +38,5 @@ exports.filterUrlFiles = function (urlList) {
 //maybe this is 4 the cron stuff?? ?
 //every so often call downloadUrls
 
-                //this should give us a filtered list
-archive.downloadUrls(archive.readListOfUrls(exports.filterUrlFiles));
+//                 //this should give us a filtered list
+// archive.downloadUrls(archive.readListOfUrls(exports.filterUrlFiles));

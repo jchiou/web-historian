@@ -26,7 +26,7 @@ var sendResult = function (path, res, req, statusCode) {
     if (err) { 
       throw err; 
     }
-    return res.end('' + data);
+    return res.end(data);
   });
   ////where best to place res.end?
 };
@@ -39,21 +39,34 @@ exports.handleRequest = function (req, res) {
       sendResult(pathOptions[req.url], res, req, statusCode);
       //paths for webURLsrn bool;})) { 
         //SO THIS PARRT IS NOT WORKING
-    } else if (archive.isUrlArchived(req.url, function (bool) { return bool; })) {
-      sendResult(archive.paths.archivedSites + '/' + req.url, res, req, statusCode);
     } else {
-      statusCode = 404; //REAL STATUS CODE?
-      res.writeHead(statusCode, headers.headers);
-      //add the url to the list
-      archive.addUrlToList(req.url /*,WHAT CB THO?*/);
-      //redirect the usR to the 'waiting' html
-      //res.redirect()
-      res.end('');
+      archive.isUrlArchived(req.url, function (bool) { 
+        if (bool === true) {
+          statusCode = 200;
+          console.log('its archived', req.url);
+          sendResult(archive.paths.archivedSites + '/' + req.url, res, req, statusCode);
+        } else {
+          var statusCode = 404; //REAL STATUS CODE?
+          console.log('404url', req.url);
+          res.writeHead(statusCode, headers.headers);
+          //add the url to the list
+          archive.addUrlToList(req.url, function(x) { return x; }, function (v) { return v; });
+          //redirect the usR to the 'waiting' html
+          //res.redirect()
+          res.end('');
+
+        }
+      });
+      
     }
+
+
   } else if (req.method === 'POST') {
     var statusCode = 201;
-    archive.addUrlToList(req.url /*,WHAT CB THO?*/);
+    archive.addUrlToList(req.url,function(x) {return x} /*,WHAT CB THO?*/);
     res.writeHead(statusCode, headers.headers);
     res.end('');
   }
 };
+
+console.log(path.normalize("//google.com"))
