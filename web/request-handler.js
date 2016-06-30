@@ -21,7 +21,7 @@ var sendResult = function (path, res, req) {
     }
     result += data;
     req.on('end', function () {
-        res.writeHead(200, headers.headers);
+      res.writeHead(200, headers.headers);
     });
     res.end(result);
   });
@@ -39,17 +39,17 @@ exports.handleRequest = function (req, res) {
         // if file exists
         if (err === null) {
           sendResult(archive.paths.archivedSites + req.url, res, req);
-      } else {
-        // console.log('error', path);
-      // make file and add to sites.txt
-      }
-    });
+        } else {
+          // console.log('error', path);
+        // make file and add to sites.txt
+        }
+      });
         //result is going to B wut we gotz in the content already
     }
 
         //test if NOT FOUND... 404
-    }
-    res.end('')
+  }
+  res.end('');
    // } else if (req.method === 'POST') {
   //   req.on('data', function(chunk) {
   //     console.log(chunk);
