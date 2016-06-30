@@ -25,8 +25,8 @@ exports.handleRequest = function (req, res) {
       //go into the path, check if its there, 
       //if it is, return the whole content of that fils
 
-      // if (fs.stat(archive.paths.archivedSites + '/' + req.url, function () {
-
+      // if (fs.stat(archive.paths.archivedSites + '/' + req.url, function () {//
+   
       // })) {
       //   //go to the path
       //   console.log('heyyy grrl heyy')
