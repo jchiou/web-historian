@@ -12,52 +12,40 @@ var pathOptions = {
   '/styles.css': 'web/public/style.css'
 };
 
-//modulizing reading file and sending html contents to client
-var sendResult = function (path, res, req) {
-  var result = '';
+//read file; send html; redirect client
+var sendResult = function (path, res, req, statusCode) {
+  req.on('end', function (chunk) {
+    res.writeHead(statusCode, headers.headers);
+    //redirect here?
+  });
+    ///////////HOW TO REDIRECT??!!////////
+    //res.redirect('https:' + /* *the filepath*/);
+    //////////////////////////////////////
+  
   fs.readFile(path, function (err, data) {
     if (err) { 
       throw err; 
     }
-    result += data;
-    req.on('end', function () {
-      res.writeHead(200, headers.headers);
-    });
-    res.end(result);
+    return res.end(data);
   });
+  ////where best to place res.end?
 };
-
 
 exports.handleRequest = function (req, res) {
   if (req.method === 'GET') {
+    var statusCode = 200;
+       //paths for special cases:
     if (req.url in pathOptions) {
-      sendResult(pathOptions[req.url], res, req);
-      //otherwise: its from the webzzz
-    } else { 
-      ////
-      fs.stat(req.url, function(err, stat) {
-        // if file exists
-        if (err === null) {
-          sendResult(archive.paths.archivedSites + req.url, res, req);
-        } else {
-          // console.log('error', path);
-        // make file and add to sites.txt
-        }
-      });
-        //result is going to B wut we gotz in the content already
+      sendResult(pathOptions[req.url], res, req, statusCode);
+      //paths for webURLsrn bool;})) { 
+    } else if (archive.isUrlArchived(req.url, function (bool) { return bool; })) {
+      sendResult(archive.paths.archivedSites + req.url, res, req, statusCode);
+    } else {
+      statusCode = 404; //REAL STATUS CODE?
+      res.writeHead(statusCode, headers.headers);
+      res.end({});
+      //add the url to the list
+      //redirect the usR to the 'waiting' html
     }
-
-        //test if NOT FOUND... 404
   }
-  res.end('');
-   // } else if (req.method === 'POST') {
-  //   req.on('data', function(chunk) {
-  //     console.log(chunk);
-  //   });
-  //   req.on('end', function(chunkAgain) {
-  //     res.writeHead(201, headers.headers);
-  //   });
-  //   res.end('');
-  // }
 };
-
