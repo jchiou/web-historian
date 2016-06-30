@@ -1,6 +1,13 @@
 var fs = require('fs');
 
-// Sync is ok here because this is called just once on startup.
+// Sync***** is ok here because this is 
+
+/*///////////////////////////////////////////////
+
+//////////called just once on startup.//////////  sync fir synchronous
+
+*///////////////////////////////////////////////
+
 module.exports = function (basePath) {
   // if the archive folder doesn't exist, create it.
   if (!fs.existsSync(basePath)) {

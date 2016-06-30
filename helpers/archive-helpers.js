@@ -34,8 +34,11 @@ exports.isUrlInList = function() {
 exports.addUrlToList = function() {
 };
 
-exports.isUrlArchived = function() {
+exports.isUrlArchived = function(url) {
+  //so is this a string or an array 
+  // console.log( exports.paths.list );
 };
 
 exports.downloadUrls = function() {
 };
+

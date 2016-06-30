@@ -12,6 +12,7 @@ archive.initialize({
   archivedSites: path.join(__dirname, '/testdata/sites'),
   list: path.join(__dirname, '/testdata/sites.txt')
 });
+console.log(__dirname);
 
 var request = supertest.agent(server);
 
@@ -31,7 +32,7 @@ describe('server', function() {
         var fixtureName = 'www.google.com';
         var fixturePath = archive.paths.archivedSites + '/' + fixtureName;
 
-        // Create or clear the file.
+        // Create or clear the file.  //fd is an integer {binary} file descriptor
         var fd = fs.openSync(fixturePath, 'w');
         fs.writeSync(fd, 'google');
         fs.closeSync(fd);
