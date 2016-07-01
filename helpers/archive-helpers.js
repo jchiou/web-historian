@@ -57,6 +57,7 @@ exports.addUrlToList = function(url, cb) {
   return exports.isUrlInList(url, function (boolean) {
     if (!boolean) {
       return fs.appendFile(exports.paths.list, url + '\n', function(err) {
+        console.log("error is", err);
         return err ? err : cb(url);
       });
     }
