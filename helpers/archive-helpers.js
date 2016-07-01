@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var request = require('request');
+var html = require('../workers/htmlfetcher.js');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -29,15 +30,15 @@ exports.initialize = function(pathsObj) {
 
 //////////////outputs an array of urls
 exports.readListOfUrls = function(cb) {
-
-  fs.readFile(exports.paths.list, function (err, data) {
+  // console.log('readList', exports.paths.list);
+  return fs.readFile(exports.paths.list, 'utf8', function (err, data) {
     if (err) { 
-      throw err;
+      throw err.code;
     } else {
       //split stuff
       var urlArray = data.toString();
       urlArray = urlArray.split('\n');
-      // console.log(cb(urlArray));
+      // console.log(urlArray);
       cb(urlArray);
     }
   });
@@ -57,7 +58,6 @@ exports.addUrlToList = function(url, cb) {
   return exports.isUrlInList(url, function (boolean) {
     if (!boolean) {
       return fs.appendFile(exports.paths.list, url + '\n', function(err) {
-        console.log("error is", err);
         return err ? err : cb(url);
       });
     }
@@ -73,12 +73,19 @@ exports.isUrlArchived = function(url, cb) {
   });
 };
 
-exports.downloadUrls = function(filteredUrlList) {
+exports.downloadUrls = function() {
   //do the downloading
-  filteredUrlList.forEach( function(url) { 
-    //
-    request('http://' + url).pipe(fs.createWriteStream(exports.paths.archivedSites + '/' + url));
+  exports.readListOfUrls( function (list) {
+    list.forEach( function(url) { 
+      //if archived -- don't download;
+      //else if not archived
+      exports.isUrlArchived(url, function(boolean) {
+        if (!boolean) {
+          request('http://' + url).pipe(fs.createWriteStream(exports.paths.archivedSites + '/' + url));
+        }
+      });
       //fs.write(body) or appendFile
+    });
   });
 };
 

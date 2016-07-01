@@ -1,4 +1,4 @@
-var archive = require('../helpers/archive-helpers');
+var archive = require('../helpers/archive-helpers.js');
 var cron = require('cron').CronJob;
 // Use the code in `archive-helpers.js` to actually download the urls
 // that are waiting.
@@ -6,29 +6,29 @@ var cron = require('cron').CronJob;
 
 
 
-
-
-
-
-/////////////////////////////////
-////FILTER pre-downloaded files
-
-exports.filterUrlFiles = function () {
-  var filteredUrls = [];
-  //for ea url in the exports.pathslist text
-  archive.readListOfUrls(function (urlArray) {
-    //check to see if exports.isUrlArchived
-    urlArray.forEach(
-      archive.isUrlArchived (url, function(boolean) {
-        if (boolean === false) {
-          filteredUrls.push(url);
-        }
-      })
-    );
-  });
-  //return??
-  archive.downloadUrls(filteredUrls);
-};
+// /////////////////////////////////
+// //FILTER pre-downloaded files
+// console.log('oooo', archive.readListOfUrls);
+// console.log('still wonky', archive.readListOfUrls(console.log));
+// exports.filterUrlFiles = function () {
+//   var filteredUrls = [];
+//   //for ea url in the exports.pathslist text
+//   return archive.readListOfUrls(function (urlArray) {
+//     urlArray.forEach(
+//       function(url) { 
+//         archive.isUrlArchived (url, function(boolean) {
+//           if (boolean === false) {
+//             // console.log('pushing');
+//             filteredUrls.push(url);
+//           }
+//         });
+//       });
+//     console.log('about to return array of filtered urls');
+//     return filteredUrls;
+//     //
+// //   });
+//   //return??
+// };
 
 
 //oh~~! prbz this file should be pure except
@@ -41,11 +41,7 @@ exports.filterUrlFiles = function () {
 //every so often call downloadUrls
 
 //                 //this should give us a filtered list
-exports.job = new cron('10 * * * * *', function() {
-  archive.downloadUrls(exports.filterUrlFiles());
-  console.log('cron is doing its thing');
-}, /* this next function is executed when the job stops*/ function() {
-  console.log('done');
-}, /* this starts the job right now*/ true, 
-null
+exports.job = new cron('10 * * * * *', function () { archive.downloadUrls(); console.log('cron'); }, function() {
+  fs.appendFile(__dirname + 'log.txt', 'poo');
+}, /* this starts the job right now*/ true
 );

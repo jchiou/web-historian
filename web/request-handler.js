@@ -17,13 +17,9 @@ var sendResult = function (path, res, req, statusCode) {
   req.on('end', function (chunk) {
     headers.headers.Location = path;
     res.writeHead(statusCode, headers.headers);
-    //redirect here?
-    ///////////HOW TO REDIRECT??!!////////
-    //res.redirect('https:' + /* *the filepath*/);
-    //////////////////////////////////////
   });
   
-  fs.readFile(path, function (err, data) {
+  fs.readFile(path, 'utf8', function (err, data) {
     if (err) { 
       throw err; 
     }
@@ -71,7 +67,7 @@ exports.handleRequest = function (req, res) {
       var postUrl = chunk.toString().slice(4);
       archive.isUrlArchived(postUrl, function (bool) { 
         if (bool === true) {
-          sendResult(archive.paths.archivedSites + '/' + postUrl, res, req, 302);
+          sendResult(archive.paths.archivedSites + '/'  + postUrl, res, req, 302);
           //if we aint got it archived
         } else {
           archive.addUrlToList(postUrl, function() {
@@ -85,5 +81,3 @@ exports.handleRequest = function (req, res) {
     });
   }
 };
-
-  console.log(pathOptions['/loading.html'])
